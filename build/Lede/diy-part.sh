@@ -117,23 +117,6 @@ rm -rf ../../Modem-Support/luci-app-modem/po/zh_Hans #解决汉化问题
 
 popd
 
-###### 5G配置 ######
-echo "
-# 5G模组短信插件
-CONFIG_PACKAGE_luci-app-sms-tool=y
-
-# 5G模组信息插件+AT工具
-CONFIG_PACKAGE_sms-tool=y
-CONFIG_PACKAGE_luci-app-modem=y
-
-# 串口调试工具
-CONFIG_PACKAGE_minicom=y
-
-# 脚本拨号工具依赖
-CONFIG_PACKAGE_procps-ng=y
-CONFIG_PACKAGE_procps-ng-ps=y
-" >> .config
-
 # 修改插件名字
 sed -i 's/"aMule设置"/"电驴下载"/g' `egrep "aMule设置" -rl ./`
 sed -i 's/"网络存储"/"NAS"/g' `egrep "网络存储" -rl ./`
