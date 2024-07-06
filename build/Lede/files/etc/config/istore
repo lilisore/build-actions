@@ -1,0 +1,4 @@
+
+config istore 'istore'
+	option super_arch 'x86_64'
+
