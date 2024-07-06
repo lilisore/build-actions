@@ -4,7 +4,6 @@
 # 自行拉取插件之前请SSH连接进入固件配置里面确认过没有你要的插件再单独拉取你需要的插件
 # 不要一下就拉取别人一个插件包N多插件的，多了没用，增加编译错误，自己需要的才好
 
-
 # 后台IP设置
 export Ipv4_ipaddr="10.10.10.10"            # 修改openwrt后台地址(填0为关闭)
 export Netmask_netm="255.255.255.0"         # IPv4 子网掩码（默认：255.255.255.0）(填0为不作修改)
@@ -72,7 +71,68 @@ export auto_kernel="true"
 export rootfs_size="2560"
 export kernel_usage="stable"
 
+mkdir Modem-Support
+pushd Modem-Support
+git clone --depth=1 https://github.com/Siriling/5G-Modem-Support .
+popd
 
+mkdir MyConfig
+pushd MyConfig
+git clone --depth=1 https://github.com/Siriling/OpenWRT-MyConfig .
+popd
+
+# Add application
+mkdir package/community
+pushd package/community
+
+git clone https://github.com/rufengsuixing/luci-app-onliner luci-app-onliner
+#Onliner
+###### 5G ######
+# 5G通信模组拨号工具
+rm -rf feeds/luci/applications/luci-app-sms-tool
+rm -rf feeds/package/utils/sms-tool
+rm -rf package/wwan/driver/quectel_QMI_WWAN
+rm -rf package/wwan/driver/quectel_MHI
+rm -rf package/wwan/app/quectel_cm_5G
+mkdir quectel_QMI_WWAN
+mkdir quectel_cm_5G
+mkdir quectel_MHI
+mkdir luci-app-hypermodem
+cp -rf ../../Modem-Support/quectel_QMI_WWAN/* quectel_QMI_WWAN
+cp -rf ../../Modem-Support/quectel_cm_5G/* quectel_cm_5G
+cp -rf ../../Modem-Support/quectel_MHI/* quectel_MHI
+cp -rf ../../Modem-Support/luci-app-hypermodem/* luci-app-hypermodem
+# 5G模组短信插件
+rm -rf feeds/luci/applications/luci-app-sms-tool
+rm -rf feeds/package/utils/sms-tool
+mkdir sms-tool
+mkdir luci-app-sms-tool
+cp -rf ../../Modem-Support/sms-tool/* sms-tool
+cp -rf ../../Modem-Support/luci-app-sms-tool/* luci-app-sms-tool
+cp -rf ../../MyConfig/configs/istoreos/general/applications/luci-app-sms-tool/* luci-app-sms-tool
+# 5G模组插件+AT工具
+mkdir luci-app-modem
+cp -rf ../../Modem-Support/luci-app-modem/* luci-app-modem
+rm -rf ../../Modem-Support/luci-app-modem/po/zh_Hans #解决汉化问题
+
+popd
+
+###### 5G配置 ######
+echo "
+# 5G模组短信插件
+CONFIG_PACKAGE_luci-app-sms-tool=y
+
+# 5G模组信息插件+AT工具
+CONFIG_PACKAGE_sms-tool=y
+CONFIG_PACKAGE_luci-app-modem=y
+
+# 串口调试工具
+CONFIG_PACKAGE_minicom=y
+
+# 脚本拨号工具依赖
+CONFIG_PACKAGE_procps-ng=y
+CONFIG_PACKAGE_procps-ng-ps=y
+" >> .config
 
 # 修改插件名字
 sed -i 's/"aMule设置"/"电驴下载"/g' `egrep "aMule设置" -rl ./`
