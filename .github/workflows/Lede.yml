@@ -23,7 +23,9 @@ on:
       CONFIG_FILE:
         description: '请选择配置文件'
         required: true
-        default: 'x86_64'
+        default:
+          - 'x86_64'
+          - 'p2w_r619ac-128m'
         type: choice
         options:
           - 'aarch64'
