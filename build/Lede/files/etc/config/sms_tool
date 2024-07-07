@@ -13,7 +13,7 @@ config sms_tool 'general'
 	option prestart '6'
 	option ledtype 'D'
 	option sendport '/dev/ttyUSB0'
-	option readport '/dev/ttyUSB2'
 	option ussd '0'
+	option readport '/dev/ttyUSB2'
 	option atport '/dev/ttyUSB2'
 
